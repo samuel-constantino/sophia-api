@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 app.post(`/task`, async (req, res) => {
-  const { title="", content=[] } = req.body
+  const { title, content, startAt } = req.body
   const phone = req.headers['x-channel'] as string;
 
   const user = await prisma.user
@@ -40,6 +40,7 @@ app.post(`/task`, async (req, res) => {
       data: {
         title,
         content,
+        startAt,
         user: {connect: {
           id: user?.id
         }}
@@ -53,13 +54,14 @@ app.post(`/task`, async (req, res) => {
     data: {
       title,
       content,
+      startAt,
       user: {connect: {
         id: user?.id
       }}
     }
   });
   
-  res.json(createdTask)
+  return res.json(createdTask)
 })
 
 const server = app.listen(3000, () =>
