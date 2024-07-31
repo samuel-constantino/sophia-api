@@ -1,12 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { Request, Response } from "express";
-import prisma from "../model/db";
 
 import {
     createTask,
-    //   showTasks,
-    //   updateTask,
-    //   deleteTask,
+    readTasks,
+    updateTask,
+    removeTask,
 } from "../services/task";
 
 export const create = async (req: Request, res: Response) => {
@@ -16,41 +15,83 @@ export const create = async (req: Request, res: Response) => {
     const data = { title, content, startAt, phone }
 
     const result = await createTask(data);
-    return res.json(result);
+    return res.status(201).json(result);
 };
 
-// export const read = async (req: Request, res: Response) => {
-//   const products = await showProducts();
+export const findMany = async (req: Request, res: Response) => {
+    const phone = req.headers['x-channel'] as string;
+    const tasks = await readTasks({ phone });
 
-//   return res.status(201).json({
-//     message: "List Data Product",
-//     data: products,
-//   });
-// };
+    return res.status(200).json(tasks);
+};
 
-// export const update = async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
-//   const product = await updateProduct(
-//     {
-//       name: req.body.name,
-//       price: req.body.price,
-//     },
-//     id
-//   );
+export const update = async (req: Request, res: Response) => {
+    const phone = req.headers['x-channel'] as string;
+    const id = parseInt(req.params.id);
 
-//   return res.status(201).json({
-//     message: "Success Update Product",
-//     data: product,
-//   });
-// };
+    let payload = {};
 
-// export const remove = async (req: Request, res: Response) => {
-//   const id = parseInt(req.params.id);
+    const {
+        title,
+        content,
+        completed,
+        startAt,
+        finishAt,
+        daily,
+    } = req.body;
 
-//   const product = await deleteProduct(id);
+    if (title) {
+        payload = {
+            ...payload,
+            title,
+        }
+    }
 
-//   return res.status(201).json({
-//     message: "Success Delete Product",
-//     data: product,
-//   });
-// };
+    if (content) {
+        payload = {
+            ...payload,
+            content,
+        }
+    }
+
+    if (completed) {
+        payload = {
+            ...payload,
+            completed,
+        }
+    }
+
+    if (startAt) {
+        payload = {
+            ...payload,
+            startAt,
+        }
+    }
+
+    if (finishAt) {
+        payload = {
+            ...payload,
+            finishAt,
+        }
+    }
+
+    if (daily) {
+        payload = {
+            ...payload,
+            daily,
+        }
+    }
+
+    const task = await updateTask({ payload, id, phone });
+
+    return res.status(200).json(task);
+};
+
+export const remove = async (req: Request, res: Response) => {
+    const phone = req.headers['x-channel'] as string;
+    const id = parseInt(req.params.id);
+
+    const removedTask = await removeTask({ id, phone });
+
+    return res.status(201).json(removedTask);
+};
