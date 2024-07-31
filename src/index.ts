@@ -1,9 +1,13 @@
-import { Prisma, PrismaClient } from '@prisma/client'
-import express from 'express'
+import express from 'express';
+import prisma from './model/db';
 import cors from 'cors';
+import dotenv from "dotenv";
+import router from "./routes/index";
 
-const prisma = new PrismaClient()
-const app = express()
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json())
@@ -17,53 +21,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post(`/task`, async (req, res) => {
-  const { title, content, startAt } = req.body
-  const phone = req.headers['x-channel'] as string;
+app.use(router);
 
-  const user = await prisma.user
-  .findUnique({
-    where: {
-      phone: phone,
-    },
-  })
-
-  if(!user) {
-    const user = await prisma.user.create({
-      data: {
-        phone: phone,
-        roles: [2],
-      }
-    });
-    
-    const createdTask = await prisma.task.create({
-      data: {
-        title,
-        content,
-        startAt,
-        user: {connect: {
-          id: user?.id
-        }}
-      }
-    });
-    
-    return res.json(createdTask)
-  }
-
-  const createdTask = await prisma.task.create({
-    data: {
-      title,
-      content,
-      startAt,
-      user: {connect: {
-        id: user?.id
-      }}
-    }
-  });
-  
-  return res.json(createdTask)
-})
-
-const server = app.listen(3000, () =>
-  console.log(`Server ready at: http://localhost:3000`),
-)
+app.listen(PORT, () => {
+  console.log(`Server running on port: ${PORT}`);
+});
