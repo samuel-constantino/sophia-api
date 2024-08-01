@@ -26,10 +26,7 @@ export const createTask = async (props: CreatePropsType) => {
 
   if (!user) {
     const user = await prisma.user.create({
-      data: {
-        phone: phone,
-        roles: [2],
-      }
+      data: {phone: phone}
     });
 
     const newTask = await prisma.task.create({
