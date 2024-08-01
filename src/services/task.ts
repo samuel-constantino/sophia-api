@@ -41,7 +41,7 @@ export const createTask = async (props: CreatePropsType) => {
       title,
       content,
       startAt,
-      user: { connect: { id: user.id } }
+      user: { connect: { id: user?.id } }
     }
   });
 
@@ -53,7 +53,9 @@ export const readTasks = async (props: { phone: string }) => {
 
   const user = await prisma.user.findUnique({ where: { phone } });
 
-  if (!user) return null;
+  if (!user) {
+    throw new Error(`Usuário com telefone ${phone} não encontrado`);
+  };
 
   const tasks = await prisma.task.findMany({ where: { userId: user.id } });
 

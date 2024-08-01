@@ -20,6 +20,11 @@ export const create = async (req: Request, res: Response) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ errors: error.errors });
     }
+
+    if (error instanceof Error) {
+      return res.status(400).json({ errors: error.message });
+    }
+
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -31,6 +36,10 @@ export const findMany = async (req: Request, res: Response) => {
 
     return res.status(200).json(tasks);
   } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ errors: error.message });
+    }
+
     return res.status(500).json({ error: 'Internal server error' });
   }
 };

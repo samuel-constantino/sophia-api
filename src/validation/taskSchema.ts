@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const createTaskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   content: z.array(z.string()).optional(),
-  startAt: z.string().nullable(),
+  startAt: z.string().nullable().optional(),
   phone: z.string().min(1, "Phone is required")
 });
 
