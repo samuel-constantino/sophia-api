@@ -17,8 +17,10 @@ model User {
   id      Int      @id @default(autoincrement())
   phone   String   @unique
   name    String?
+  role   String @default("CLIENT")
+  email   String?
+
   tasks   Task[]
-  roles   Int[]
 }
 
 model Task {
@@ -29,10 +31,10 @@ model Task {
   startAt   DateTime?
   finishAt  DateTime?
   daily     Boolean  @default(false)
-  
-  user    User     @relation(fields: [userId], references: [id])
-  userId  Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  user    User     @relation(fields: [userId], references: [id])
+  userId  Int
 }
