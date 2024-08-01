@@ -1,5 +1,4 @@
 import express from 'express';
-import prisma from './model/db';
 import cors from 'cors';
 import dotenv from "dotenv";
 import router from "./routes/index";
