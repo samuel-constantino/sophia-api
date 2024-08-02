@@ -11,7 +11,8 @@ import {
 export const create = async (req: Request, res: Response) => {
   try {
     const { title, content, startAt } = req.body;
-    const phone = req.headers['x-channel'] as string;
+    const channel = req.headers['x-channel'] as string;
+    const phone = channel.split('@')[0];
 
     const data = { title, content, startAt, phone };
 
@@ -32,7 +33,9 @@ export const create = async (req: Request, res: Response) => {
 
 export const findMany = async (req: Request, res: Response) => {
   try {
-    const phone = req.headers['x-channel'] as string;
+    const channel = req.headers['x-channel'] as string;
+    const phone = channel.split('@')[0];
+
     const tasks = await readTasks({ phone });
 
     return res.status(200).json(tasks);
@@ -47,7 +50,8 @@ export const findMany = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   try {
-    const phone = req.headers['x-channel'] as string;
+    const channel = req.headers['x-channel'] as string;
+    const phone = channel.split('@')[0];
     const id = parseInt(req.params.id);
 
     const {
@@ -81,7 +85,8 @@ export const update = async (req: Request, res: Response) => {
 
 export const remove = async (req: Request, res: Response) => {
   try {
-    const phone = req.headers['x-channel'] as string;
+    const channel = req.headers['x-channel'] as string;
+    const phone = channel.split('@')[0];
     const id = parseInt(req.params.id);
 
     const removedTask = await removeTask({ id, phone });
