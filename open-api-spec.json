@@ -12,7 +12,7 @@
     }
   ],
   "paths": {
-    "/": {
+    "/task": {
       "post": {
         "operationId": "createTask",
         "summary": "Create a new task",
@@ -221,7 +221,7 @@
         ]
       }
     },
-    "/{id}": {
+    "/task/{id}": {
       "put": {
         "operationId": "updateTask",
         "summary": "Update a task",
