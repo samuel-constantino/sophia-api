@@ -15,6 +15,10 @@ app.use(express.json());
 
 // Middleware para verificar o header x-channel
 app.use((req, res, next) => {
+  if (req.path.startsWith('/job')) {
+    return next();
+  }
+
   const channel = req.headers['x-channel'];
   if (!channel) {
     return res.status(400).json({ error: 'x-channel header is required' });
