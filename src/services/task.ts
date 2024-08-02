@@ -1,5 +1,5 @@
 // services/task.ts
-import { sortTaskByStartDate } from "../helpers";
+import { sendMessage, sortTaskByStartDate } from "../helpers";
 import prisma from "../model/db";
 import { createTaskSchema, updateTaskSchema } from "../validation/taskSchema";
 
@@ -95,4 +95,34 @@ export const removeTask = async (props: { id: number, phone: string }) => {
   const removedTask = await prisma.task.delete({ where: { id } });
 
   return removedTask;
+};
+
+export const reminderTasks = async () => {
+  // Buscar todas as tarefas pendentes
+  const pendingTasks = await prisma.task.findMany({
+    where: { completed: false },
+    include: {user: true}
+  });
+
+    // Hora atual ajustada para -3 horas
+    const currentTime = new Date();
+    currentTime.setHours(currentTime.getHours() - 3);
+
+  // Hora atual menos 5 minutos
+  const fiveMinutesAgo = new Date(currentTime.getTime() - 5 * 60 * 1000);
+
+  // Filtrar tarefas com startAt dentro de 5 minutos antes da hora atual
+  const filteredTasks = pendingTasks.filter(task => {
+    if (!task.startAt) return false;
+    const startAtDate = new Date(task.startAt);
+    return startAtDate >= fiveMinutesAgo && startAtDate <= currentTime;
+  });
+
+  filteredTasks.forEach((task) => {
+    const phone = task.user.phone;
+    const message = `Ei, lembre-se da tarefa: ${task.title}`
+    sendMessage(phone, message);
+  })
+
+  return {success: true};
 };

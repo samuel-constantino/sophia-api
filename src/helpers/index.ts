@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 interface taskProps {
     id: number;
     title: string;
@@ -27,3 +31,37 @@ export const sortTaskByStartDate = (tasks: taskProps[]) => {
 
       return sortedTasks;
 }
+
+export const sendMessage = (phone: string, message: string) => {
+    const baseUrl = process.env.INDIER_SKD_BASE_URL;
+    if(!baseUrl || baseUrl === "") {
+      throw new Error("Indier SDK base URL inválida");
+    }
+  
+    const token = process.env.INDIER_AUTHORIZATION;
+    if(!token || token === "") {
+      throw new Error("Indier: token de autorização inválido");
+    }
+  
+    const instanceId = process.env.INDIER_INSTANCE_ID;
+    if(!instanceId || instanceId === "") {
+      throw new Error("Indier: ID da instância inválida");
+    }
+  
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`, 
+        'Content-Type': 'application/json'
+      },
+      body: `{"to":"${phone}","message":"${message}"}`
+    };
+  
+    
+    fetch(`${baseUrl}?instanceId=${instanceId}`, options)
+      .then(response => response.json())
+      .then(response => console.dir(response))
+      .catch(err => {
+        throw new Error(err.message)
+      });
+  }
