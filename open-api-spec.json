@@ -14,6 +14,7 @@
   "paths": {
     "/": {
       "post": {
+        "operationId": "createTask",
         "summary": "Create a new task",
         "description": "Creates a new task with the given details",
         "requestBody": {
@@ -131,6 +132,7 @@
         ]
       },
       "get": {
+        "operationId": "getTasks",
         "summary": "Get all tasks",
         "description": "Returns a list of all tasks",
         "responses": {
@@ -221,6 +223,7 @@
     },
     "/{id}": {
       "put": {
+        "operationId": "updateTask",
         "summary": "Update a task",
         "description": "Updates the details of an existing task",
         "requestBody": {
@@ -372,6 +375,7 @@
         ]
       },
       "delete": {
+        "operationId": "deleteTask",
         "summary": "Delete a task",
         "description": "Deletes an existing task",
         "responses": {
