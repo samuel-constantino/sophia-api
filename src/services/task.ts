@@ -109,13 +109,13 @@ export const reminderTasks = async () => {
     currentTime.setHours(currentTime.getHours() - 3);
 
   // Hora atual menos 5 minutos
-  const fiveMinutesAgo = new Date(currentTime.getTime() - 5 * 60 * 1000);
+  const fiveMinutesLater = new Date(currentTime.getTime() + 5 * 60 * 1000);
 
   // Filtrar tarefas com startAt dentro de 5 minutos antes da hora atual
   const filteredTasks = pendingTasks.filter(task => {
     if (!task.startAt) return false;
     const startAtDate = new Date(task.startAt);
-    return startAtDate >= fiveMinutesAgo && startAtDate <= currentTime;
+    return startAtDate >= fiveMinutesLater && startAtDate <= currentTime;
   });
 
   filteredTasks.forEach((task) => {
