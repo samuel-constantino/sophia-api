@@ -1,4 +1,5 @@
 // services/task.ts
+import { sortTaskByStartDate } from "../helpers";
 import prisma from "../model/db";
 import { createTaskSchema, updateTaskSchema } from "../validation/taskSchema";
 
@@ -58,9 +59,11 @@ export const readTasks = async (props: { phone: string }) => {
     throw new Error(`Usuário com telefone ${phone} não encontrado`);
   };
 
-  const tasks = await prisma.task.findMany({ where: { userId: user.id } });
+  const tasks = await prisma.task.findMany({ 
+    where: { userId: user.id }
+  });
 
-  return tasks;
+  return sortTaskByStartDate(tasks);
 };
 
 export const updateTask = async (props: UpdatePropsType) => {
@@ -68,7 +71,9 @@ export const updateTask = async (props: UpdatePropsType) => {
 
   const { payload, id, phone } = validatedData;
 
-  const user = await prisma.user.findUnique({ where: { phone } });
+  const user = await prisma.user.findUnique({ 
+    where: { phone },
+  });
 
   if (!user) return null;
 
