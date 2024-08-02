@@ -8,9 +8,9 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "dev:nodemon": "./node_modules/nodemon/bin/nodemon.js",
     "test": "jest",
-    "start": "ts-node src/index.ts",
-    "start:nodemon": "./node_modules/nodemon/bin/nodemon.js",
+    "start": "node dist/src/index.js",
     "build": "tsc",
     "prisma-generate": "prisma generate",
     "prisma-migrate-deploy": "prisma migrate deploy"
@@ -28,7 +28,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "4.17.21",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.14.13",
+    "@types/node": "^20.14.14",
     "@types/superagent": "^8.1.8",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
