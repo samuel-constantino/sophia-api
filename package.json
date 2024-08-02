@@ -10,8 +10,8 @@
     "dev": "ts-node src/index.ts",
     "dev:nodemon": "./node_modules/nodemon/bin/nodemon.js",
     "test": "jest",
+    "build": "npm install && tsc",
     "start": "node dist/src/index.js",
-    "build": "tsc",
     "prisma-generate": "prisma generate",
     "prisma-migrate-deploy": "prisma migrate deploy"
   },
