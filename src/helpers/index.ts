@@ -64,5 +64,6 @@ export const sendMessage = async (phone: string, message: string) => {
     }
 
     const json = await response.json();
-    return json?.message;
+    
+    return {success: true, data: json?.message};
   }
