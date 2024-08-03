@@ -124,7 +124,7 @@ export const reminderTasks = async () => {
     console.dir({reminder: response});
   });
 
-  console.dir({filteredTasks: filteredTasks.length});
+  console.dir({currentTime: currentTime, filteredTasks: filteredTasks.length});
   
   return { success: true};
 };
