@@ -2,6 +2,11 @@
 import { sendMessage, sortTaskByStartDate } from "../helpers";
 import prisma from "../model/db";
 import { createTaskSchema, updateTaskSchema } from "../validation/taskSchema";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const {REMINDER_MINUTES_INCREASE="60"} = process.env;
 
 interface CreatePropsType {
   title: string,
@@ -108,10 +113,8 @@ export const reminderTasks = async () => {
   const currentTime = new Date();
   currentTime.setHours(currentTime.getHours() - 3);
 
-  const TIME_INCREASE = 60 //mins
-
   // Hora atual + 5 minutos ajustada para -3 horas
-  const minutesLater = new Date(currentTime.getTime() + TIME_INCREASE * 60 * 1000);
+  const minutesLater = new Date(currentTime.getTime() + Number(REMINDER_MINUTES_INCREASE) * 60 * 1000);
 
   // Filtrar tarefas com startAt dentro de 5 minutos depois da hora atual
   const filteredTasks = pendingTasks.filter(task => {
