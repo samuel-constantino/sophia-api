@@ -59,7 +59,7 @@ export const readTasks = async (props: { phone: string }) => {
     throw new Error(`Usuário com telefone ${phone} não encontrado`);
   };
 
-  const tasks = await prisma.task.findMany({ 
+  const tasks = await prisma.task.findMany({
     where: { userId: user.id }
   });
 
@@ -71,7 +71,7 @@ export const updateTask = async (props: UpdatePropsType) => {
 
   const { payload, id, phone } = validatedData;
 
-  const user = await prisma.user.findUnique({ 
+  const user = await prisma.user.findUnique({
     where: { phone },
   });
 
@@ -101,31 +101,30 @@ export const reminderTasks = async () => {
   // Buscar todas as tarefas pendentes
   const pendingTasks = await prisma.task.findMany({
     where: { completed: false },
-    include: {user: true}
+    include: { user: true }
   });
 
-    // Hora atual ajustada para -3 horas
-    const currentTime = new Date();
-    currentTime.setHours(currentTime.getHours() - 3);
+  // Hora atual ajustada para -3 horas
+  const currentTime = new Date();
+  currentTime.setHours(currentTime.getHours() - 3);
 
-  // Hora atual menos 5 minutos
+  // Hora atual + 5 minutos ajustada para -3 horas
   const fiveMinutesLater = new Date(currentTime.getTime() + 5 * 60 * 1000);
 
   // Filtrar tarefas com startAt dentro de 5 minutos depois da hora atual
   const filteredTasks = pendingTasks.filter(task => {
     if (!task.startAt) return false;
     const startAtDate = new Date(task.startAt);
-    return startAtDate >= fiveMinutesLater && startAtDate >= currentTime;
+    return startAtDate >= currentTime && startAtDate <= fiveMinutesLater;
+  });
+  filteredTasks.forEach(async (task) => {
+    const phone = task.user.phone;
+    const message = `Ei, lembre-se da tarefa: ${task.title}`;
+    const response = await sendMessage(phone, message);
+    console.dir({reminder: response});
   });
 
-  const data: any = [];
-
-  filteredTasks.forEach((task) => {
-    const phone = task.user.phone;
-    const message = `Ei, lembre-se da tarefa: ${task.title}`
-    const response = sendMessage(phone, message);
-    data.push(response);
-  })
-
-  return {success: true, data: data};
+  console.dir({filteredTasks: filteredTasks.length});
+  
+  return { success: true};
 };
