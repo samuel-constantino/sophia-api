@@ -56,11 +56,13 @@ export const sendMessage = (phone: string, message: string) => {
       },
       body: `{"to":"${phone}","message":"${message}"}`
     };
-  
     
     fetch(`${baseUrl}?instanceId=${instanceId}`, options)
-      .then(response => response.json())
-      .then(response => console.dir(response))
+      .then(response => {
+        const res = response.json();
+        console.log(res);
+        return res;
+      })
       .catch(err => {
         throw new Error(err.message)
       });
