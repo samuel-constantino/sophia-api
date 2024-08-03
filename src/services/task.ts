@@ -126,7 +126,9 @@ export const reminderTasks = async () => {
     console.dir({reminder: response});
   });
 
-  console.dir({currentTime: currentTime, filteredTasks: filteredTasks.length});
+  const resumeTasks = filteredTasks.map(({title, startAt}) => ({title, startAt}));
+
+  console.dir({currentTime: currentTime, resumeTasks});
   
-  return { success: true, currentTime, filteredTasks};
+  return { success: true, currentTime, resumeTasks};
 };
