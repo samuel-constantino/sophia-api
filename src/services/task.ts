@@ -122,8 +122,7 @@ export const reminderTasks = async () => {
   filteredTasks.forEach(async (task) => {
     const phone = task.user.phone;
     const message = `Ei, lembre-se da tarefa ${task.title}`;
-    const response = await sendMessage(phone, message);
-    console.dir({reminder: response});
+    await sendMessage(phone, message);
   });
 
   const resumeTasks = filteredTasks.map(({title, startAt}) => ({title, startAt}));
