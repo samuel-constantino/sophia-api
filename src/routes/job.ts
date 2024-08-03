@@ -3,7 +3,7 @@ import {reminder, postman} from "../controllers/job";
 
 const router: Router = Router();
 
-router.get("/reminder", reminder);
+router.get("/task/reminder", reminder);
 router.get("/postman", postman);
 
 export default router;
