@@ -29,3 +29,17 @@ export const postman = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export const test = async (req: Request, res: Response) => {
+  try {
+    console.dir({testCron: new Date()});
+    return res.status(200).json({success: 'hehe'});
+  } catch (error) {
+    if (error instanceof Error) {
+      console.dir({ errors: error.message });
+      return res.status(400).json({ errors: error.message });
+    }
+
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
