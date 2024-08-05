@@ -5,10 +5,10 @@ dotenv.config();
 interface taskProps {
     id: number;
     title: string;
-    content: string[];
+    subtasks: string[];
     completed: boolean;
     startAt: Date | null;
-    finishAt: Date | null;
+    remindAt: Date | null;
     daily: boolean;
     createdAt: Date;
     updatedAt: Date;

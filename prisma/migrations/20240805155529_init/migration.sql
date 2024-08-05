@@ -13,10 +13,10 @@ CREATE TABLE "User" (
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR(255) NOT NULL,
-    "content" TEXT[],
+    "subtasks" TEXT[],
     "completed" BOOLEAN NOT NULL DEFAULT false,
     "startAt" TIMESTAMP(3),
-    "finishAt" TIMESTAMP(3),
+    "remindAt" TIMESTAMP(3),
     "daily" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

@@ -26,10 +26,10 @@ model User {
 model Task {
   id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
-  content   String[]
+  subtasks   String[]
   completed Boolean  @default(false)
   startAt   DateTime?
-  finishAt  DateTime?
+  remindAt  DateTime?
   daily     Boolean  @default(false)
 
   createdAt DateTime @default(now())

@@ -11,11 +11,11 @@ import {
 
 export const create = async (req: Request, res: Response) => {
   try {
-    const { title, content, startAt, finishAt, daily } = req.body;
+    const { title, subtasks, startAt, remindAt, daily } = req.body;
     const channel = req.headers['x-channel'] as string;
     const phone = channel.split('@')[0];
 
-    const data = { title, content, startAt, finishAt, daily, phone };
+    const data = { title, subtasks, startAt, remindAt, daily, phone };
 
     const result = await createTask(data);
     return res.status(201).json(result);
@@ -57,19 +57,19 @@ export const update = async (req: Request, res: Response) => {
 
     const {
       title,
-      content,
+      subtasks,
       completed,
       startAt,
-      finishAt,
+      remindAt,
       daily,
     } = req.body;
 
     const payload = {
       title,
-      content,
+      subtasks,
       completed,
       startAt,
-      finishAt,
+      remindAt,
       daily,
     };
 

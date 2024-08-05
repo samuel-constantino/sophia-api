@@ -11,9 +11,9 @@ const {REMINDER_MINUTES_INCREASE="60"} = process.env;
 
 interface CreatePropsType {
   title: string,
-  content: string[],
+  subtasks: string[],
   startAt: string | null,
-  finishAt: string | null,
+  remindAt: string | null,
   daily: boolean,
   phone: string
 };
@@ -27,15 +27,15 @@ interface UpdatePropsType {
 export const createTask = async (props: CreatePropsType) => {
   const validatedData = createTaskSchema.parse(props);
 
-  const { title, content, startAt, finishAt, daily, phone } = validatedData;
+  const { title, subtasks, startAt, remindAt, daily, phone } = validatedData;
 
   const user = await prisma.user.findUnique({ where: { phone } });
 
   const payload = {
     title,
-    content,
+    subtasks,
     startAt,
-    finishAt,
+    remindAt,
     daily
   };
 
@@ -49,6 +49,8 @@ export const createTask = async (props: CreatePropsType) => {
       }
     });
 
+    console.dir({createdTask: newTask});
+
     return newTask;
   }
 
@@ -58,6 +60,8 @@ export const createTask = async (props: CreatePropsType) => {
       user: { connect: { id: user?.id } }
     }
   });
+
+  console.dir({createdTask: newTask});
 
   return newTask;
 };
@@ -94,6 +98,8 @@ export const updateTask = async (props: UpdatePropsType) => {
     data: { ...payload }
   });
 
+  console.dir({updatedTask});
+
   return updatedTask;
 };
 
@@ -105,6 +111,8 @@ export const removeTask = async (props: { id: number, phone: string }) => {
   if (!user) return null;
 
   const removedTask = await prisma.task.delete({ where: { id } });
+
+  console.dir({removedTask});
 
   return removedTask;
 };
