@@ -31,16 +31,20 @@ export const createTask = async (props: CreatePropsType) => {
 
   const user = await prisma.user.findUnique({ where: { phone } });
 
+  const payload = {
+    title,
+    content,
+    startAt,
+    finishAt,
+    daily
+  };
+
   if (!user) {
     const newUser = await prisma.user.create({ data: { phone } });
 
     const newTask = await prisma.task.create({
       data: {
-        title,
-        content,
-        startAt,
-        finishAt,
-        daily,
+        ...payload,
         user: { connect: { id: newUser.id } }
       }
     });
@@ -50,9 +54,7 @@ export const createTask = async (props: CreatePropsType) => {
 
   const newTask = await prisma.task.create({
     data: {
-      title,
-      content,
-      startAt,
+      ...payload,
       user: { connect: { id: user?.id } }
     }
   });
