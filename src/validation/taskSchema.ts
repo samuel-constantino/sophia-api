@@ -4,6 +4,8 @@ export const createTaskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   content: z.array(z.string()).optional(),
   startAt: z.string().nullable().optional(),
+  finishAt: z.string().nullable().optional(),
+  daily: z.boolean().optional(),
   phone: z.string().min(1, "Phone is required")
 });
 

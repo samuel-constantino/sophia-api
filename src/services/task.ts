@@ -13,6 +13,8 @@ interface CreatePropsType {
   title: string,
   content: string[],
   startAt: string | null,
+  finishAt: string | null,
+  daily: boolean,
   phone: string
 };
 
@@ -25,7 +27,7 @@ interface UpdatePropsType {
 export const createTask = async (props: CreatePropsType) => {
   const validatedData = createTaskSchema.parse(props);
 
-  const { title, content, startAt, phone } = validatedData;
+  const { title, content, startAt, finishAt, daily, phone } = validatedData;
 
   const user = await prisma.user.findUnique({ where: { phone } });
 
@@ -37,6 +39,8 @@ export const createTask = async (props: CreatePropsType) => {
         title,
         content,
         startAt,
+        finishAt,
+        daily,
         user: { connect: { id: newUser.id } }
       }
     });
