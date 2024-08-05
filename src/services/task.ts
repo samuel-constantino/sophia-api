@@ -113,7 +113,7 @@ export const reminderTasks = async () => {
   const currentTime = new Date();
   currentTime.setHours(currentTime.getHours() - 3);
 
-  // Hora atual + 5 minutos ajustada para -3 horas
+  // Hora atual + incremento
   const minutesLater = new Date(currentTime.getTime() + Number(REMINDER_MINUTES_INCREASE) * 60 * 1000);
 
   // Filtrar tarefas com startAt dentro de 5 minutos depois da hora atual
@@ -122,6 +122,7 @@ export const reminderTasks = async () => {
     const startAtDate = new Date(task.startAt);
     return startAtDate >= currentTime && startAtDate <= minutesLater;
   });
+  
   filteredTasks.forEach(async (task) => {
     const phone = task.user.phone;
     const message = `Ei, lembre-se da tarefa ${task.title}`;
