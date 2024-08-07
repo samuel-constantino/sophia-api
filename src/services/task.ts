@@ -150,7 +150,7 @@ export const reminderTasks = async () => {
         minute: "numeric"
       })
 
-      const message = `Ei, você lembre-se da tarefa ${title} às ${formatedTime}`;
+      const message = `Ei, você lembre-se da tarefa ${title} às ${formatedTime.split(", ")[1]}`;
       await sendMessage(user.phone, message);
     } 
   });
