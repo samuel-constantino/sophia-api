@@ -3,11 +3,6 @@
 import { sendMessage, sortTaskByStartDate } from "../helpers";
 import prisma from "../model/db";
 import { createTaskSchema, updateTaskSchema } from "../validation/taskSchema";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const {REMINDER_MINUTES_INCREASE="60"} = process.env;
 
 interface CreatePropsType {
   title: string,
@@ -49,7 +44,7 @@ export const createTask = async (props: CreatePropsType) => {
       }
     });
 
-    console.dir({createdTask: newTask});
+    console.dir({ createdTask: newTask });
 
     return newTask;
   }
@@ -61,7 +56,7 @@ export const createTask = async (props: CreatePropsType) => {
     }
   });
 
-  console.dir({createdTask: newTask});
+  console.dir({ createdTask: newTask });
 
   return newTask;
 };
@@ -98,7 +93,7 @@ export const updateTask = async (props: UpdatePropsType) => {
     data: { ...payload }
   });
 
-  console.dir({updatedTask});
+  console.dir({ updatedTask });
 
   return updatedTask;
 };
@@ -112,7 +107,7 @@ export const removeTask = async (props: { id: number, phone: string }) => {
 
   const removedTask = await prisma.task.delete({ where: { id } });
 
-  console.dir({removedTask});
+  console.dir({ removedTask });
 
   return removedTask;
 };
@@ -120,33 +115,45 @@ export const removeTask = async (props: { id: number, phone: string }) => {
 export const reminderTasks = async () => {
   // Buscar todas as tarefas pendentes
   const pendingTasks = await prisma.task.findMany({
-    where: { completed: false },
+    where: {
+      completed: false
+    },
     include: { user: true }
   });
 
-  // Hora atual ajustada para -3 horas
+  // Hora atual com segundos zerados e ajustada para -3 horas (fuso horário)
   const currentTime = new Date();
+  currentTime.setSeconds(0, 0);
   currentTime.setHours(currentTime.getHours() - 3);
 
-  // Hora atual + incremento
-  const minutesLater = new Date(currentTime.getTime() + Number(REMINDER_MINUTES_INCREASE) * 60 * 1000);
+  pendingTasks.forEach(async ({ title, remindAt, startAt, user }) => {
+    if (!remindAt || !startAt) return;
 
-  // Filtrar tarefas com startAt dentro de 5 minutos depois da hora atual
-  const filteredTasks = pendingTasks.filter(task => {
-    if (!task.startAt) return false;
-    const startAtDate = new Date(task.startAt);
-    return startAtDate >= currentTime && startAtDate <= minutesLater;
+    console.dir({remindTask: {title, startAt, remindAt}});
+
+    const remindTime = new Date(remindAt);
+    remindTime.setSeconds(0, 0);
+
+    if (currentTime !== remindTime) return;
+
+    const startTime = new Date(startAt);
+    startTime.setSeconds(0, 0);
+
+    if(currentTime > startTime) {
+      const message = `Ei, você completou a tarefa ${title}?`;
+      await sendMessage(user.phone, message);
+    }
+    
+    if(currentTime <= startTime) {
+      const formatedTime = startTime.toLocaleDateString('pt-BR', {
+        hour: "numeric",
+        minute: "numeric"
+      })
+
+      const message = `Ei, você lembre-se da tarefa ${title} às ${formatedTime}`;
+      await sendMessage(user.phone, message);
+    } 
   });
-  
-  filteredTasks.forEach(async (task) => {
-    const phone = task.user.phone;
-    const message = `Ei, lembre-se da tarefa ${task.title}`;
-    await sendMessage(phone, message);
-  });
 
-  const resumeTasks = filteredTasks.map(({title, startAt}) => ({title, startAt}));
-
-  console.dir({currentTime: currentTime, resumeTasks});
-  
-  return { success: true, currentTime, resumeTasks};
+  return { success: true, currentTime };
 };

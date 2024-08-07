@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { reminderTasks } from "../services/task";
 import { sendLetter } from "../services/postman";
 
-export const reminder = async (req: Request, res: Response) => {
+export const reminder = async (req: Request, res: Response): Promise<any> => {
   try {
     const data = await reminderTasks();
     return res.status(200).json(data);
