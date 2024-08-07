@@ -157,3 +157,24 @@ export const reminderTasks = async () => {
 
   return { success: true, currentTime };
 };
+
+export const dailyResetTasks = async () => {
+  // Buscar todas as tarefas pendentes
+  const dailyCompletedTasks = await prisma.task.findMany({
+    where: {
+      daily: true,
+      completed: true
+    },
+  });
+
+  dailyCompletedTasks.forEach(async ({id}) => {
+    const dailyResetedTask = await prisma.task.update({
+      where: { id },
+      data: { completed: false }
+    });
+
+    console.dir({dailyResetedTask});
+  });
+
+  return { success: true };
+};
