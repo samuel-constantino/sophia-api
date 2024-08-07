@@ -129,22 +129,22 @@ export const reminderTasks = async () => {
   pendingTasks.forEach(async ({ title, remindAt, startAt, user }) => {
     if (!remindAt || !startAt) return;
 
-    console.dir({remindTask: {title, startAt, remindAt}});
-
     const remindTime = new Date(remindAt);
     remindTime.setSeconds(0, 0);
 
-    if (currentTime !== remindTime) return;
+    if (currentTime.getTime() !== remindTime.getTime()) return;
 
     const startTime = new Date(startAt);
     startTime.setSeconds(0, 0);
 
     if(currentTime > startTime) {
+      console.dir({remindedTask: {title, startAt, remindAt}});
       const message = `Ei, você completou a tarefa ${title}?`;
       await sendMessage(user.phone, message);
     }
     
     if(currentTime <= startTime) {
+      console.dir({confirmatedTask: {title, startAt, remindAt}});
       const formatedTime = startTime.toLocaleDateString('pt-BR', {
         hour: "numeric",
         minute: "numeric"
