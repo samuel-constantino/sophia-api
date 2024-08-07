@@ -167,13 +167,33 @@ export const dailyResetTasks = async () => {
     },
   });
 
-  dailyCompletedTasks.forEach(async ({id}) => {
+  dailyCompletedTasks.forEach(async ({ id, startAt, remindAt }) => {
+    const currentDate = new Date();
+
+    const updatedData: any = { completed: false };
+
+    if (startAt) {
+      const newStartAt = new Date(startAt);
+      newStartAt.setFullYear(currentDate.getFullYear());
+      newStartAt.setMonth(currentDate.getMonth());
+      newStartAt.setDate(currentDate.getDate());
+      updatedData.startAt = newStartAt;
+    }
+
+    if (remindAt) {
+      const newRemindAt = new Date(remindAt);
+      newRemindAt.setFullYear(currentDate.getFullYear());
+      newRemindAt.setMonth(currentDate.getMonth());
+      newRemindAt.setDate(currentDate.getDate());
+      updatedData.remindAt = newRemindAt;
+    }
+
     const dailyResetedTask = await prisma.task.update({
       where: { id },
-      data: { completed: false }
+      data: updatedData
     });
 
-    console.dir({dailyResetedTask});
+    console.dir({ dailyResetedTask });
   });
 
   return { success: true };
