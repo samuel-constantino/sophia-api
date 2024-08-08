@@ -138,19 +138,19 @@ export const reminderTasks = async () => {
     startTime.setSeconds(0, 0);
 
     if(currentTime > startTime) {
-      console.dir({remindedTask: {title, startAt, remindAt}});
+      console.dir({taskConfirmed: {title, startAt, remindAt}});
       const message = `Ei, você completou a tarefa ${title}?`;
       await sendMessage(user.phone, message);
     }
     
     if(currentTime <= startTime) {
-      console.dir({confirmatedTask: {title, startAt, remindAt}});
+      console.dir({taskReminder: {title, startAt, remindAt}});
       const formatedTime = startTime.toLocaleDateString('pt-BR', {
         hour: "numeric",
         minute: "numeric"
       })
 
-      const message = `Ei, você lembre-se da tarefa ${title} às ${formatedTime.split(", ")[1]}`;
+      const message = `Ei, lembre-se da tarefa ${title} às ${formatedTime.split(", ")[1]}`;
       await sendMessage(user.phone, message);
     } 
   });
